@@ -1,21 +1,48 @@
 import time
-import pyautogui
-
-import os
-
-dir_fd = os.open('./poems', os.O_RDONLY)
-
-print("bardic-chatter: The only way to recite good tales")
-print("")
-print("To use this, select the poem name, and use the ']' key to progress through each line.")
-print("Make sure you're tabbed into Minecraft, LOTC server!")
-
+import keyboard
 # To do
 # Set up exit to type (exit)
-# Set up function to pull data from poems/"talename".txt
 # Set up listener for click (])
-# 
-time.clock_gettime
-pyautogui.click()
-talename = input("What story would you like to play?")
+proceed_key = ']'  # proceed to o
+exit_key = 'ctrl+space'  # escape to stop program
+story_loop = True
 
+
+def stop_story():
+    global story_loop
+    story_loop = False
+    keyboard.press_and_release(proceed_key)
+    print("Story will terminate after this line \n")
+
+
+keyboard.add_hotkey(exit_key, stop_story)
+
+while story_loop:
+    talename = input("What story would you like to play?")
+
+    print(f"To proceed, press {proceed_key}")
+    print(f"To exit, press {exit_key}")
+
+    if not story_loop:
+        break
+
+    with open(f"poems/{talename}.txt", "r") as file:
+        for line in file:
+            if not story_loop:
+                break
+            keyboard.wait(proceed_key)
+
+            if not story_loop:
+                break
+
+            # Press t
+            keyboard.press_and_release('t')
+
+            keyboard.write(line)
+
+            if story_loop is False:
+                break
+
+            time.sleep(0.6)
+keyboard.unhook_all_hotkeys()
+print("\nProgram terminated.")
